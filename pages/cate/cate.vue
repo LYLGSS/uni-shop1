@@ -1,28 +1,32 @@
 <template>
-  <view class="scroll-view-container">
-    <!-- 左侧滑动区域 -->
-    <scroll-view class="left-scroll-view" scroll-y="true" :style="{height: wh+'px'}">
-      <block v-for="(item,index) in cateList" :key="item.cat_id">
-        <view :class="['left-scroll-view-item',index===active?'active':'']" @click="activeChanged(index)">
-          {{item.cat_name}}
-        </view>
-      </block>
-    </scroll-view>
-    <!-- 右侧滑动区域 -->
-    <scroll-view scroll-y="true" :style="{height: wh+'px'}" :scroll-top="scrollTop">
-      <view class="cate-lv2" v-for="item2 in cateLevel2" :key="item2.cat_id">
-        <view class="cate-lv2-title">/ {{item2.cat_name}} /</view>
-        <!-- 三级分类列表容器 -->
-        <view class="cate-lv3-list">
-          <view class="cate-lv3-item" v-for="item3 in item2.children" :key="item3.cat_id" @click="gotoGoodsList(item3)">
-            <!-- 三级分类的图片 -->
-            <image :src="item3.cat_icon.replace('dev','web')" mode=""></image>
-            <!-- 三级分类的文本 -->
-            <text>{{item3.cat_name}}</text>
+  <view>
+    <my-search @click.native="gotoSearch"></my-search>
+    <view class="scroll-view-container">
+      <!-- 左侧滑动区域 -->
+      <scroll-view class="left-scroll-view" scroll-y="true" :style="{height: wh+'px'}">
+        <block v-for="(item,index) in cateList" :key="item.cat_id">
+          <view :class="['left-scroll-view-item',index===active?'active':'']" @click="activeChanged(index)">
+            {{item.cat_name}}
+          </view>
+        </block>
+      </scroll-view>
+      <!-- 右侧滑动区域 -->
+      <scroll-view scroll-y="true" :style="{height: wh+'px'}" :scroll-top="scrollTop">
+        <view class="cate-lv2" v-for="item2 in cateLevel2" :key="item2.cat_id">
+          <view class="cate-lv2-title">/ {{item2.cat_name}} /</view>
+          <!-- 三级分类列表容器 -->
+          <view class="cate-lv3-list">
+            <view class="cate-lv3-item" v-for="item3 in item2.children" :key="item3.cat_id"
+              @click="gotoGoodsList(item3)">
+              <!-- 三级分类的图片 -->
+              <image :src="item3.cat_icon.replace('dev','web')" mode=""></image>
+              <!-- 三级分类的文本 -->
+              <text>{{item3.cat_name}}</text>
+            </view>
           </view>
         </view>
-      </view>
-    </scroll-view>
+      </scroll-view>
+    </view>
   </view>
 
 </template>
@@ -45,7 +49,7 @@
     },
     onLoad() {
       const windowInfo = uni.getWindowInfo()
-      this.wh = windowInfo.windowHeight
+      this.wh = windowInfo.windowHeight - 50
       // 获取分类列表数据
       this.getCateList()
     },
@@ -72,6 +76,11 @@
       gotoGoodsList(item) {
         uni.navigateTo({
           url: `/subpkg/goods_list/goods_list?cid=${item.cat_id}`
+        })
+      },
+      gotoSearch() {
+        uni.navigateTo({
+          url: "/subpkg/search/search"
         })
       }
     }
