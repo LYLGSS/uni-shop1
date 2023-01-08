@@ -21,7 +21,7 @@
         </view>
       </view>
       <!-- 运费 -->
-      <view class="yf">快递：免运费</view>
+      <view class="yf">快递：免运费 -- {{cart.length}}</view>
     </view>
     <rich-text :nodes="goods_info.goods_introduce"></rich-text>
     <!-- 商品导航组件区域 -->
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+  import { mapState, mapMutations, mapGetters } from 'vuex'
   export default {
     data() {
       return {
@@ -44,7 +45,7 @@
         }, {
           icon: 'cart',
           text: '购物车',
-          info: 6
+          info: 0
         }],
         // 右侧按钮的配置对象
         buttonGroup: [{
@@ -62,7 +63,6 @@
     },
     methods: {
       async onLoad(options) {
-        console.log(options);
         const goods_id = options.goods_id
         const { data: res } = await uni.$http.get("/api/public/v1/goods/detail", { goods_id })
         if (res.meta.status !== 200) return uni.showMsg()
@@ -85,6 +85,38 @@
             url: "/pages/cart/cart"
           })
         }
+      },
+      ...mapMutations('m_cart', ['addToCart']),
+      buttonClick(e) {
+        if (e.content.text === '加入购物车') {
+          // 组织商品的信息对象
+          const goods = {
+            goods_id: this.goods_info.goods_id,
+            goods_name: this.goods_info.goods_name,
+            goods_price: this.goods_info.goods_price,
+            goods_count: 1,
+            goods_small_logo: this.goods_info.goods_small_logo,
+            goods_state: true
+          }
+          this.addToCart(goods)
+        }
+      }
+    },
+    computed: {
+      ...mapState('m_cart', []),
+      ...mapGetters('m_cart', ['total'])
+    },
+    watch: {
+      // 监听商品总个数的变化，使页面上购物车角标及时更新
+      total: {
+        handler(newValue) {
+          const findResult = this.options.find(item => item.text === '购物车')
+          if (findResult) {
+            findResult.info = newValue
+          }
+        },
+        // 首次加载就触发此监听器，否则刷新后购物车的角标不显示
+        immediate: true
       }
     }
   }
