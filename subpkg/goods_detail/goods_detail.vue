@@ -21,7 +21,7 @@
         </view>
       </view>
       <!-- 运费 -->
-      <view class="yf">快递：免运费 -- {{cart.length}}</view>
+      <view class="yf">快递：免运费</view>
     </view>
     <rich-text :nodes="goods_info.goods_introduce"></rich-text>
     <!-- 商品导航组件区域 -->
@@ -103,7 +103,6 @@
       }
     },
     computed: {
-      ...mapState('m_cart', []),
       ...mapGetters('m_cart', ['total'])
     },
     watch: {

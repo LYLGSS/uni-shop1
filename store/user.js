@@ -4,7 +4,12 @@ export default {
 
   // 模块的 state 数据
   state: () => ({
-    address: JSON.parse(uni.getStorageSync('address') || '{}')
+    address: JSON.parse(uni.getStorageSync('address') || '{}'),
+    token: uni.getStorageSync('token') || '',
+    // 用户的信息
+    userinfo: JSON.parse(uni.getStorageSync('userinfo') || '{}'),
+    // 重定向的对象
+    redirectInfo: null
   }),
 
   // 模块的 mutations 方法
@@ -17,7 +22,30 @@ export default {
     // 持久化存储收货地址
     saveAddressToStorage(state) {
       uni.setStorageSync('address', JSON.stringify(state.address))
+    },
+    // 更新userinfo
+    updateUserInfo(state, userinfo) {
+      state.userinfo = userinfo
+      this.commit('m_user/saveUserInfoToStorage')
+    },
+    // 持久化存储用户信息
+    saveUserInfoToStorage(state) {
+      uni.setStorageSync('userinfo', JSON.stringify(state.userinfo))
+    },
+    // 更新token
+    updateToken(state, token) {
+      state.token = token
+      this.commit('m_user/saveTokenToStorage')
+    },
+    // 持久化存储token
+    saveTokenToStorage(state) {
+      uni.setStorageSync('token', state.token)
+    },
+    // 存储有重定向页面的信息的对象
+    updateRedirectInfo(state, info) {
+      state.redirectInfo = info
     }
+
   },
 
   // 模块的 getters 属性
